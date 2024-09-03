@@ -1,3 +1,10 @@
-FROM mariadb:10.5
+FROM debian:bullseye
 
-COPY mariadb /var/lib/mysql
+RUN apt-get update && apt-get install -y mariadb-server
+
+RUN mkdir -p /var/lib/mysql /run/mysqld && \
+    chown -R mysql:mysql /var/lib/mysql /run/mysqld
+
+COPY init.sql /docker-entrypoint-initdb.d/
+
+CMD ["mysqld"]
