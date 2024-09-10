@@ -1,0 +1,13 @@
+[mysqld]
+# define directory to store data files
+datadir = /var/lib/mysql
+# define location to store process
+pid-file = /run/mysqld/mysqld.pid
+# define path to socket file
+socket  = /run/mysqld/mysqld.sock
+# define IP addresses to listen to
+bind_address=*
+# define default port to listen to
+port = 3306
+# define the user that MariaDB runs as
+user = mysql

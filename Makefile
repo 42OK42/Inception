@@ -1,16 +1,20 @@
-.PHONY: all build up down clean
+.PHONY: all clean build up down logs restart
 
 all: build up
 
 build:
-	sudo docker-compose -f docker-compose.yml build
+	docker-compose -f srcs/docker-compose.yml build
 
 up:
-	sudo docker-compose -f docker-compose.yml up -d
+	docker-compose -f srcs/docker-compose.yml up -d
 
 down:
-	sudo docker-compose -f docker-compose.yml down
+	docker-compose -f srcs/docker-compose.yml down
 
 clean: down
-	sudo docker-compose -f docker-compose.yml rm -f
-	sudo docker system prune -f
+	docker system prune -af
+
+logs:
+	docker-compose -f srcs/docker-compose.yml logs -f
+
+restart: down up
