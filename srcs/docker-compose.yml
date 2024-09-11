@@ -4,20 +4,25 @@ services:
   nginx:
     build:
       context: ./requirements/nginx
+      dockerfile: Dockerfile
     ports:
       - "443:443"
-    restart: always
+    env_file:
+      - .env
+    restart: unless-stopped
     networks:
       - my_network
 
   mariadb:
     build:
       context: ./requirements/mariadb
+      dockerfile: Dockerfile
     container_name: my_mariadb_container
-    env_file:
-      - .env
     ports:
       - "3306:3306"
+    env_file:
+      - .env
+    restart: unless-stopped
     volumes:
       - mariadb_data:/var/lib/mysql
     networks:
