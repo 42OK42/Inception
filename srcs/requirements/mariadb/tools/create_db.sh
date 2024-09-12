@@ -2,28 +2,28 @@
 
 # Start MariaDB server
 mysqld_safe --datadir='/var/lib/mysql' &
-until mysqladmin ping -uroot -p"$(cat "$MDB_ROOT_PW")" --silent; do
+until mysqladmin ping -uroot -p"$MYSQL_ROOT_PASSWORD" --silent; do
     echo "Waiting for MariaDB to start..."
     sleep 1
 done
 
 # Check if database already exists
-DB_EXISTS=$(mysql -uroot -p"$(cat "$MDB_ROOT_PW")" -e "SHOW DATABASES LIKE '$MDB_DB_NAME'" | grep "$MDB_DB_NAME" > /dev/null; echo "$?")
+DB_EXISTS=$(mysql -uroot -p"$MYSQL_ROOT_PASSWORD" -e "SHOW DATABASES LIKE '$MYSQL_DB_NAME'" | grep "$MYSQL_DB_NAME" > /dev/null; echo "$?")
 
 # Create database if it does not exist
 if [ "$DB_EXISTS" -eq 1 ]; then
-    echo "Database does not exist. Creating database and user..." >> /var/log/mariadb_env_vars.log
-    mysql -uroot -p"$(cat "$MDB_ROOT_PW")" -e "CREATE DATABASE IF NOT EXISTS \`$MDB_DB_NAME\`" || { echo 'Failed to create database' >> /var/log/mariadb_env_vars.log; exit 1; }
-    mysql -uroot -p"$(cat "$MDB_ROOT_PW")" -e "CREATE USER IF NOT EXISTS '$MDB_USER'@'%' IDENTIFIED BY '$(cat "$MDB_PW")'" || { echo 'Failed to create user' >> /var/log/mariadb_env_vars.log; exit 1; }
-    mysql -uroot -p"$(cat "$MDB_ROOT_PW")" -e "GRANT ALL PRIVILEGES ON *.* TO '$MDB_USER'@'%' WITH GRANT OPTION;" || { echo 'Failed to grant privileges' >> /var/log/mariadb_env_vars.log; exit 1; }
-    mysql -uroot -p"$(cat "$MDB_ROOT_PW")" -e "FLUSH PRIVILEGES;" || { echo 'Failed to flush privileges' >> /var/log/mariadb_env_vars.log; exit 1; }
-    echo "Database and user created successfully." >> /var/log/mariadb_env_vars.log
+    echo "Database does not exist. Creating database and user..."
+    mysql -uroot -p"$MYSQL_ROOT_PASSWORD" -e "CREATE DATABASE IF NOT EXISTS \`$MYSQL_DB_NAME\`" || { echo 'Failed to create database'; exit 1; }
+    mysql -uroot -p"$MYSQL_ROOT_PASSWORD" -e "CREATE USER IF NOT EXISTS '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PW'" || { echo 'Failed to create user'; exit 1; }
+    mysql -uroot -p"$MYSQL_ROOT_PASSWORD" -e "GRANT ALL PRIVILEGES ON *.* TO '$MYSQL_USER'@'%' WITH GRANT OPTION;" || { echo 'Failed to grant privileges'; exit 1; }
+    mysql -uroot -p"$MYSQL_ROOT_PASSWORD" -e "FLUSH PRIVILEGES;" || { echo 'Failed to flush privileges'; exit 1; }
+    echo "Database and user created successfully."
 else
-    echo "Database already exists. Skipping creation." >> /var/log/mariadb_env_vars.log
+    echo "Database already exists. Skipping creation."
 fi
 
 # Stop the MariaDB service started by the service command
-mysqladmin shutdown -uroot -p"$(cat "$MDB_ROOT_PW")"
+mysqladmin shutdown -uroot -p"$MYSQL_ROOT_PASSWORD"
 
 # Start MariaDB in the foreground to keep the container running
 exec mysqld_safe --datadir='/var/lib/mysql'

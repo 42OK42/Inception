@@ -20,7 +20,7 @@ RUN mkdir -p /etc/nginx/ssl && \
     -subj "/C=FR/ST=IDF/L=Paris/O=42/OU=42/CN=okrahl.42.fr"
 
 # expose HTTPS port
-EXPOSE 443
+EXPOSE 443 80
 
 # start nginx in the foreground
 CMD ["nginx", "-g", "daemon off;"]

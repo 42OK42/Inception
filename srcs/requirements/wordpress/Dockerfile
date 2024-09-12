@@ -1,13 +1,23 @@
+# base image
 FROM debian:bullseye
 
-RUN apt-get update && apt-get install -y php-fpm php-mysql curl tar
+RUN mkdir -p /var/www/wordpress
 
-RUN mkdir -p /var/www/html && \
-    curl -O https://wordpress.org/latest.tar.gz && \
-    tar -xzf latest.tar.gz && \
-    mv wordpress/* /var/www/html/ && \
-    chown -R www-data:www-data /var/www/html && \
-    mkdir -p /run/php && \
-    chown -R www-data:www-data /run/php
+# update package manager
+RUN apt-get update -y && apt-get upgrade -y
 
-CMD ["php-fpm7.4", "-F"]
+# install packages
+RUN apt-get install -y wget php php7.4-fpm php-mysql mariadb-client curl netcat-traditional
+# sendmail
+
+# clean up cached package files
+RUN rm -rf /var/lib/apt/lists/
+
+# copy WordPress config script into container
+COPY tools/wordpress_conf.sh /usr/local/bin/wordpress_conf.sh
+
+# change executable rights of database creation script
+RUN chmod +x /usr/local/bin/wordpress_conf.sh
+
+# define WordPress config script to run when container starts
+ENTRYPOINT ["/usr/local/bin/wordpress_conf.sh"]
