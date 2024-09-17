@@ -1,11 +1,13 @@
 .PHONY: all clean build up down logs restart init stop start status
 
+SECRETS_SCRIPT := ./srcs/initialize_secrets.sh
+
 all: build up
 
-build:
+build: init
 	docker-compose -f srcs/docker-compose.yml build
 
-up:
+up: init
 	docker-compose -f srcs/docker-compose.yml up -d
 
 down:
@@ -13,7 +15,9 @@ down:
 
 clean: down
 	@echo "Cleaning up..."
-	docker system prune -af
+	@rm -rf ./srcs/secrets
+	@docker system prune -af
+	@echo "Clean up complete"
 
 logs:
 	docker-compose -f srcs/docker-compose.yml logs -f
@@ -23,7 +27,7 @@ re: down up
 # Initialize data folder, credentials and environment (without starting)
 init:
 	@echo "Initializing Files and Credentials..."
-	@./srcs/init.sh
+	@$(SECRETS_SCRIPT)
 	@echo "Initialization complete"
 
 # Stop all running containers
