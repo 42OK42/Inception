@@ -1,6 +1,7 @@
 .PHONY: all clean build up down logs restart init stop start status
 
 SECRETS_SCRIPT := ./srcs/initialize_secrets.sh
+ENV_FILE := ./srcs/.env
 
 all: build up
 
@@ -15,7 +16,8 @@ down:
 
 clean: down
 	@echo "Cleaning up..."
-	@rm -rf ./srcs/secrets
+	@rm -rf ./secrets
+	@rm -f $(ENV_FILE)
 	@docker system prune -af
 	@echo "Clean up complete"
 

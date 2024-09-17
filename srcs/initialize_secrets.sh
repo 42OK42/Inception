@@ -24,7 +24,7 @@ mkdir -p "$DIR"
 echo -e "\e[32m✔\e[0m Directory $DIR created."
 
 # CREATE SECRETS DIRECTORY AND GENERATE PASSWORDS
-DIR="./srcs/secrets"
+DIR="./secrets"
 if [ -d "$DIR" ]; then
   rm -fr "$DIR"
   echo -e "\e[33m✔\e[0m Directory $DIR removed."
@@ -37,13 +37,13 @@ generate_password > "$DIR/db_password.txt"
 generate_password > "$DIR/db_root_password.txt"
 echo -e "\e[32m✔\e[0m Secrets created."
 
-# # CREATE SSL CERTIFICATES
-# if [ ! -f "$DIR/inception.crt" ] || [ ! -f "$DIR/inception.key" ]; then
-#   openssl req -x509 -nodes -out "$DIR/inception.crt" -keyout "$DIR/inception.key" -subj "/C=DE/ST=IDF/L=BERLIN/O=42/OU=42/CN=okrahl.42.fr/UID=okrahl.42.fr" 2> /dev/null
-#   echo -e "\e[32m✔\e[0m SSL certificates created."
-# else
-#   echo -e "\e[33m✔\e[0m SSL certificates already exist."
-# fi
+# CREATE SSL CERTIFICATES
+if [ ! -f "$DIR/inception.crt" ] || [ ! -f "$DIR/inception.key" ]; then
+  openssl req -x509 -nodes -out "$DIR/inception.crt" -keyout "$DIR/inception.key" -subj "/C=DE/ST=IDF/L=BERLIN/O=42/OU=42/CN=okrahl.42.fr/UID=okrahl.42.fr" 2> /dev/null
+  echo -e "\e[32m✔\e[0m SSL certificates created."
+else
+  echo -e "\e[33m✔\e[0m SSL certificates already exist."
+fi
 
 # SET PERMISSIONS FOR SSL CERTIFICATES
 chmod 644 "$DIR/inception.crt"
