@@ -32,9 +32,16 @@ chown -R www-data:www-data /var/www/wordpress
 # download WordPress into /var/www/WordPress directory
 wp core download --allow-root
 
-wp core config --dbhost=mariadb:3306 --dbname="$MYSQL_DB_NAME" --dbuser="$MYSQL_USER" --dbpass="$MYSQL_PW" --allow-root
-wp core install --url="$DOMAIN_NAME" --title="$WP_TITLE" --admin_user="$WP_ADMIN_NAME" --admin_password="$WP_ADMIN_PW" --admin_email="$WP_ADMIN_EMAIL" --allow-root
-wp user create "$WP_USER_NAME" "$WP_USER_EMAIL" --user_pass="$WP_USER_PW" --role="$WP_USER_ROLE" --allow-root
+# Pfade zu den Secrets-Dateien
+DB_PASSWORD=$(cat /run/secrets/db_password.txt)
+WP_ADMIN_PASSWORD=$(cat /run/secrets/wp_root_password.txt)
+WP_USER_PASSWORD=$(cat /run/secrets/wp_user_password.txt)
+
+# Configure WordPress
+wp core config --dbhost=mariadb:3306 --dbname="$MYSQL_DB_NAME" --dbuser="$MYSQL_USER" --dbpass="$DB_PASSWORD" --allow-root
+wp core install --url="$DOMAIN_NAME" --title="$WP_TITLE" --admin_user="$WP_ADMIN_NAME" --admin_password="$WP_ADMIN_PASSWORD" --admin_email="$WP_ADMIN_EMAIL" --allow-root
+wp user create "$WP_USER_NAME" "$WP_USER_EMAIL" --user_pass="$WP_USER_PASSWORD" --role="$WP_USER_ROLE" --allow-root
+
 ### CONFIGURE PHP
 
 # change listen port from unix socket to 9000

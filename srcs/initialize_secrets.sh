@@ -2,7 +2,7 @@
 
 # Function to generate a random password
 generate_password() {
-  openssl rand -base64 8
+  openssl rand -base64 12
 }
 
 # CREATE WORDPRESS DIRECTORY
