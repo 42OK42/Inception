@@ -13,10 +13,13 @@ MYSQL_DB_NAME="$MDB_DB_NAME"
 
 # Start MariaDB server
 mysqld_safe --datadir='/var/lib/mysql' &
-until mysqladmin ping -uroot -p"$MYSQL_ROOT_PASSWORD" --silent; do
+until mysqladmin ping -uroot --silent; do
     echo "Waiting for MariaDB to start..."
     sleep 1
 done
+
+# Setze das Root-Passwort
+mysql -uroot -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '$MYSQL_ROOT_PASSWORD'; FLUSH PRIVILEGES;"
 
 # Check if database already exists
 DB_EXISTS=$(mysql -uroot -p"$MYSQL_ROOT_PASSWORD" -e "SHOW DATABASES LIKE '$MYSQL_DB_NAME'" | grep "$MYSQL_DB_NAME" > /dev/null; echo "$?")
