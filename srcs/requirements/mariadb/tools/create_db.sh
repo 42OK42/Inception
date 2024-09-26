@@ -1,5 +1,16 @@
 #!/bin/bash
 
+# Read passwords from Docker secrets
+MYSQL_ROOT_PASSWORD=$(cat /run/secrets/mdb_root_pw)
+MYSQL_PW=$(cat /run/secrets/mdb_pw)
+
+# Debug-Ausgabe
+echo "Root Password: $MYSQL_ROOT_PASSWORD"
+
+# Use environment variables directly
+MYSQL_USER="$MDB_USER"
+MYSQL_DB_NAME="$MDB_DB_NAME"
+
 # Start MariaDB server
 mysqld_safe --datadir='/var/lib/mysql' &
 until mysqladmin ping -uroot -p"$MYSQL_ROOT_PASSWORD" --silent; do
