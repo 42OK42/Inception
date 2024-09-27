@@ -39,20 +39,6 @@ WP_USER_PASSWORD=$(cat /run/secrets/wp_user_pw)
 MYSQL_DB_NAME="$MDB_DB_NAME"
 MYSQL_USER="$MDB_USER"
 
-# Debug-Ausgabe
-echo "DB_PASSWORD: $DB_PASSWORD"
-echo "WP_ADMIN_PASSWORD: $WP_ADMIN_PASSWORD"
-echo "WP_USER_PASSWORD: $WP_USER_PASSWORD"
-echo "MYSQL_DB_NAME: $MYSQL_DB_NAME"
-echo "MYSQL_USER: $MYSQL_USER"
-echo "DOMAIN_NAME: $DOMAIN_NAME"
-echo "WP_TITLE: $WP_TITLE"
-echo "WP_ADMIN_NAME: $WP_ADMIN_NAME"
-echo "WP_ADMIN_EMAIL: $WP_ADMIN_EMAIL"
-echo "WP_USER_NAME: $WP_USER_NAME"
-echo "WP_USER_EMAIL: $WP_USER_EMAIL"
-echo "WP_USER_ROLE: $WP_USER_ROLE"
-
 # Configure WordPress
 wp core config --dbhost=mariadb:3306 --dbname="$MYSQL_DB_NAME" --dbuser="$MYSQL_USER" --dbpass="$DB_PASSWORD" --allow-root
 wp core install --url="$DOMAIN_NAME" --title="$WP_TITLE" --admin_user="$WP_ADMIN_NAME" --admin_password="$WP_ADMIN_PASSWORD" --admin_email="$WP_ADMIN_EMAIL" --allow-root

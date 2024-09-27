@@ -3,7 +3,7 @@
 SECRETS_SCRIPT := ./srcs/initialize_secrets.sh
 ENV_FILE := ./srcs/.env
 SECRETS_DIR := ./secrets
-DATA_DIR := ./data
+DATA_DIR := ../../data
 
 all: build run
 
@@ -24,10 +24,10 @@ clean: down
 	@echo "\e[34mCleaning up secrets and environment files...\e[0m"
 	@rm -fr $(SECRETS_DIR) || true
 	@rm -fr $(ENV_FILE) || true
-	@rm -fr $(DATA_DIR) || true
+	@sudo rm -fr $(DATA_DIR) || true
 	@echo "\e[32mClean up complete\e[0m"
 	@echo "\e[34mRemoving Docker volumes...\e[0m"
-	@docker volume rm srcs_mariadb_data srcs_wordpress_files || true
+	@docker volume rm mariadb wordpress || true
 	@echo "\e[34mPruning Docker system...\e[0m"
 	@docker system prune --all --force
 	@echo "\e[32mPrune complete. Containers and Volumes were removed\e[0m"
